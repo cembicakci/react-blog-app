@@ -13,7 +13,7 @@
 * Login with your google account
 * Add posts to database and delete
 
-## Usage
+## Usage
 ```
 npm start
 npm install
