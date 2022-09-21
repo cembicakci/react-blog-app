@@ -1,11 +1,18 @@
 import React, { useEffect, useState } from 'react'
-import { getDocs, collection } from 'firebase/firestore' //database deki verilei çekmek için 
-import { db } from '../firebase';
+import { getDocs, collection, deleteDoc, doc } from 'firebase/firestore' //database deki verilei çekmek için 
+import { auth, db } from '../firebase';
 
-function Home() {
+
+function Home({ isAuth }) {
 
   const [postList, setPostList] = useState([]);
   const postCollectionRef = collection(db, 'posts')
+
+
+  const deletePost = async (id) => {
+    const postDoc = doc(db, 'posts', id); //hangi post silinecekse o 'doc' ile tanımlanır.
+    await deleteDoc(postDoc)
+  }
 
   useEffect(() => {
     const getPosts = async () => {
@@ -14,7 +21,8 @@ function Home() {
     }
 
     getPosts()
-  }, [])
+  }, [deletePost])
+
 
   return (
     <div className='homePage'>
@@ -25,6 +33,15 @@ function Home() {
               <div className='title'>
                 <h1>{post.title}</h1>
               </div>
+
+              <div className='deletePost'>
+                {/* unicode */}
+                {
+                  isAuth && post.author.id === auth.currentUser.uid &&
+                  <button onClick={() => deletePost(post.id)}>&#128465;</button>
+                }
+              </div>
+
             </div>
 
             <div className='postTextContainer'>
